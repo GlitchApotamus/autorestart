@@ -1,0 +1,23 @@
+name: AutoRestart
+version: 0
+main: net.cchaven.autorestart.AutoRestart
+api-version: 1.21
+
+commands:
+  autorestart:
+    description: Manage AutoRestart plugin
+    usage: /autorestart <reload | restart [delayInMinutes] | cancel>
+    permission: autorestart
+    aliases:
+      - ar
+
+permissions:
+  autorestart.reload:
+    description: Allows reloading of the AutoRestart config
+    default: op
+  autorestart.restart:
+    description: Allows manually restarting the server via command
+    default: op
+  autorestart.cancel:
+    description: Allows canceling the scheduled restart
+    default: op
