@@ -49,10 +49,3 @@ tasks.processResources {
 }
 
 
-tasks.register("deploy") {
-    doLast {
-        exec {
-            commandLine("scp", "./build/libs/autorestart-all.jar", "minecraft-super:~/mc-plugins/autorestart-all.jar")
-        }
-    }
-}
