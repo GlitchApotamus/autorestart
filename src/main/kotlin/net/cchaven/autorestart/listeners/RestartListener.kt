@@ -25,7 +25,7 @@ class RestartListener : Listener {
 
     private val restartConfig = AutoRestart.instance.toml.restart
     private val logger = AutoRestart.instance.logger
-    private val warningIntervals = listOf(30, 20, 15, 10, 5, 3, 1)
+    private val warningIntervals = restartConfig.warningIntervals
     private var hoursLeft: Long = 0
     private var minutesLeft: Long = 0
     private val sentWarnings = AutoRestart.instance.sentWarnings

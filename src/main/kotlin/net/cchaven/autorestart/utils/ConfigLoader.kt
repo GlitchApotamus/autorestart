@@ -8,7 +8,8 @@ import java.nio.file.Path
 
 data class RestartConfig(
     val cron: String,
-    val command: String
+    val command: String,
+    val warningIntervals: List<Int>
 )
 
 data class Config(
@@ -29,8 +30,13 @@ object ConfigLoader {
                     
                     # Change options below to specify when to restart the server
                     [restart]
-                    cron = "* * * * *" 
+                    # Cron expression for scheduling automatic restarts (e.g., "0 0 3 * * *" for every 3 AM)
+                    cron = "0 0 3 * * *"
+                    # what command to run to restart the server. make sure you have a ./start.sh or ./start.bat file to use restart
                     command = "restart"
+                    # List of warning intervals (in minutes) before the restart
+                    warningIntervals = [30, 20, 15, 10, 5, 3, 1]
+
    
                 """.trimIndent()
             )
