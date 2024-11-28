@@ -34,7 +34,7 @@ The plugin is configured using the `config.toml` file, which is located in the p
 ```toml
 [restart]
 # Cron expression for scheduling automatic restarts (e.g., "0 0 3 * * *" for every 3 AM)
-cron = "0 0 3 * * *"
+cron = "0 3 * * *"
 # Command to execute when the server restarts (e.g., "stop" to stop the server)
 command = "stop"
 # List of warning intervals (in minutes) before the restart
