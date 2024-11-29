@@ -43,7 +43,14 @@ tasks.processResources {
     val props = mapOf("version" to version)
     inputs.properties(props)
     filteringCharset = "UTF-8"
-    filesMatching("paper-plugin.yml") {
+    filesMatching("plugin.yml") {
         expand(props)
+    }
+}
+
+// ENSURE YOU HAVE bash SET IN YOUR env table!
+tasks.register("deploy") {
+    exec {
+        commandLine("bash", "upload.sh")
     }
 }
