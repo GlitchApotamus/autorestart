@@ -60,6 +60,19 @@ val targetJavaVersion = 21
 kotlin {
     jvmToolchain(targetJavaVersion)
 }
+tasks.jar {enabled = false}
+tasks {
+    shadowJar {
+        archiveBaseName.set("autorestart")
+        archiveVersion.set("")
+        archiveClassifier.set("")
+        manifest {
+            attributes(
+                "Main-Class" to "net.cchaven.autorestart.AutoRestart"
+            )
+        }
+    }
+}
 
 tasks.build {
     dependsOn("shadowJar")
@@ -74,7 +87,11 @@ tasks.processResources {
         expand(props)
     }
 }
-
+tasks.processResources {
+    filesMatching("plugin.yml") {
+        expand("version" to newVersion)
+    }
+}
 // ENSURE YOU HAVE bash SET IN YOUR env table!
 tasks.register("deploy") {
     exec {

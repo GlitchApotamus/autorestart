@@ -1,5 +1,5 @@
 name: AutoRestart
-version: 0
+version: ${version}
 main: net.cchaven.autorestart.AutoRestart
 api-version: 1.21
 
