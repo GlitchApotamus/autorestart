@@ -1,3 +1,5 @@
+import java.security.MessageDigest
+
 val versionFile = file("version.txt")
 
 fun incrementVersion(version: String): String {
@@ -77,6 +79,7 @@ tasks {
 tasks.build {
     dependsOn("shadowJar")
     dependsOn("showVersion")
+    dependsOn("generateFingerprint")
 }
 
 tasks.processResources {
@@ -101,5 +104,28 @@ tasks.register("deploy") {
 tasks.register("showVersion") {
     doLast {
         println("Current plugin version: $newVersion")
+    }
+}
+tasks.register("generateFingerprint") {
+    dependsOn(tasks.shadowJar) // Ensure it runs after the shadowJar task
+
+    doLast {
+        val jarFile = file("build/libs/autorestart.jar") // Path to your fat JAR
+        if (jarFile.exists()) {
+            // Generate SHA-256 hash (you can use other algorithms, e.g., MD5 or SHA-1)
+            val sha256 = MessageDigest.getInstance("SHA-256")
+            val fileBytes = jarFile.readBytes()
+            val hashBytes = sha256.digest(fileBytes)
+            val hashString = hashBytes.joinToString("") { "%02x".format(it) }
+
+            // Output the hash/fingerprint
+            println("Fingerprint (SHA-256): $hashString")
+
+            // Optionally, save the hash to a file
+            val fingerprintFile = file("build/libs/autorestart-fingerprint.txt")
+            fingerprintFile.writeText(hashString)
+        } else {
+            println("JAR file not found: ${jarFile.absolutePath}")
+        }
     }
 }
