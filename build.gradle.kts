@@ -1,3 +1,28 @@
+val versionFile = file("version.txt")
+
+fun incrementVersion(version: String): String {
+    val parts = version.split(".").map { it.toInt() }
+    val major = parts[0]
+    var minor = parts[1]
+    var patch = parts[2]
+
+    if (patch < 9) {
+        patch++
+    } else {
+        patch = 0
+        if (minor < 9) {
+            minor++
+        } else {
+            minor = 0
+        }
+    }
+
+    return "$major.$minor.$patch"
+}
+
+val currentVersion = versionFile.readText().trim()
+val newVersion = incrementVersion(currentVersion)
+
 plugins {
     kotlin("jvm") version "2.1.0-Beta2"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -5,7 +30,8 @@ plugins {
 }
 
 group = "net.cchaven"
-version = ""
+version = newVersion
+versionFile.writeText(newVersion)
 
 repositories {
     mavenCentral()
@@ -37,6 +63,7 @@ kotlin {
 
 tasks.build {
     dependsOn("shadowJar")
+    dependsOn("showVersion")
 }
 
 tasks.processResources {
@@ -52,5 +79,10 @@ tasks.processResources {
 tasks.register("deploy") {
     exec {
         commandLine("bash", "upload.sh")
+    }
+}
+tasks.register("showVersion") {
+    doLast {
+        println("Current plugin version: $newVersion")
     }
 }
