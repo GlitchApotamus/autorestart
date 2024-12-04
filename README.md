@@ -1,5 +1,7 @@
 # AutoRestart Plugin for Minecraft Bukkit (Paper)
 
+### The latest version of this plugin can always be found [HERE](https://ci.cc-haven.net/autorestart/latest)
+
 ## Overview
 
 The **AutoRestart Plugin** is a Minecraft server plugin designed to automate server restarts based on a customizable schedule. 
