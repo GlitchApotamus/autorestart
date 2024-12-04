@@ -14,10 +14,13 @@ commands:
 permissions:
   autorestart.reload:
     description: Allows reloading of the AutoRestart config
-    default: op
+    default: op # All players can use this, but modify as needed
+
   autorestart.restart:
     description: Allows manually restarting the server via command
-    default: op
+    default: op # Restrict this to server operators by default
+
   autorestart.cancel:
     description: Allows canceling the scheduled restart
-    default: op
+    default: op # Restrict this to server operators by default
+

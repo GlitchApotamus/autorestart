@@ -20,11 +20,6 @@ class AutoRestartCommand : CommandExecutor, TabExecutor {
     private val restartListener = AutoRestart.restartListener
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
-        if (!sender.hasPermission("autorestart")) {
-            sender.sendMessage("§cYou do not have permission to use this command")
-            return true
-        }
-
         if (args == null || args.isEmpty()) {
             sender.sendMessage("§cUsage: /autorestart <reload | restart | cancel>")
             return true
@@ -33,6 +28,10 @@ class AutoRestartCommand : CommandExecutor, TabExecutor {
         try {
             when (args[0]) {
                 "reload" -> {
+                    if (!sender.hasPermission("autorestart.reload")) {
+                        sender.sendMessage("§cYou do not have permission to reload the AutoRestart config.")
+                        return true
+                    }
                     AutoRestart.instance.toml = try {
                         ConfigLoader.loadConfig(AutoRestart.instance)
                             ?: throw Exception("Invalid config.toml. Please check the console for the stack trace.")
@@ -46,6 +45,11 @@ class AutoRestartCommand : CommandExecutor, TabExecutor {
                 }
 
                 "restart" -> {
+                    if (!sender.hasPermission("autorestart.restart")) {
+                        sender.sendMessage("§cYou do not have permission to schedule a server restart.")
+                        return true
+                    }
+
                     if (args.size < 2) {
                         sender.sendMessage("§cYou must specify the delay for the restart.")
                         return true
@@ -68,14 +72,19 @@ class AutoRestartCommand : CommandExecutor, TabExecutor {
                     restartListener.sendUnplannedRestartMessageToPlayers()
                     sender.sendMessage("§aServer will restart in $delayInMinutes minutes.")
                     AutoRestart.instance.logger.info("${green}Server restart scheduled in $delayInMinutes minutes${reset}")
-
                 }
 
                 "cancel" -> {
+                    if (!sender.hasPermission("autorestart.cancel")) {
+                        sender.sendMessage("§cYou do not have permission to cancel a server restart.")
+                        return true
+                    }
+
                     if (!AutoRestart.instance.isRestartActive) {
                         sender.sendMessage("§cThe server doesn't have any unplanned restarts currently.")
                         return true
                     }
+
                     cancelRestart()
                     sender.sendMessage("§aServer restart has been cancelled.")
                     AutoRestart.instance.logger.info("${green}Server restart cancelled${reset}")
@@ -93,6 +102,7 @@ class AutoRestartCommand : CommandExecutor, TabExecutor {
         }
         return true
     }
+
 
     private fun scheduleRestart(delayMinutes: Int) {
         restartTask?.cancel()
