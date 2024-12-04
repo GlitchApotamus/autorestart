@@ -24,6 +24,7 @@ class RestartListener : Listener {
     private var hoursLeft: Long = 0
     private var minutesLeft: Long = 0
     private var warnMinutesLeft: Long = 0
+    private var lastRestarted: ZonedDateTime? = null
 
     init {
         startListener()
@@ -63,7 +64,13 @@ class RestartListener : Listener {
     }
 
     private fun shouldRestart(now: ZonedDateTime, nextExecution: ZonedDateTime): Boolean {
-        return now.isAfter(nextExecution.minusMinutes(1)) && now.isBefore(nextExecution.plusMinutes(1))
+        if (now.isAfter(nextExecution.minusMinutes(1)) && now.isBefore(nextExecution.plusMinutes(1))) {
+            if (lastRestarted != nextExecution) {
+                lastRestarted = nextExecution
+                return true
+            }
+        }
+        return false
     }
 
     private fun triggerRestart() {
