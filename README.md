@@ -1,6 +1,7 @@
 # AutoRestart Plugin for Minecraft Bukkit (Paper)
 
 ### The latest version of this plugin can always be found [HERE](https://ci.cc-haven.net/autorestart/latest)
+Please use this link instead of github releases as it will always be up to date. 1.0.7 is the latest version currently.
 
 ## Overview
 

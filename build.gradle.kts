@@ -100,8 +100,19 @@ tasks.register("deploy") {
     }
 }
 tasks.register("showVersion") {
+    val readmeFile = file("README.md")
+    inputs.file(readmeFile)
+    outputs.file(readmeFile)
     doLast {
         println("Current plugin version: $newVersion")
+        val versionPlaceholder = currentVersion // Placeholder in README.md
+        val currentVersion = project.version.toString()
+
+        if (readmeFile.exists()) {
+            val updatedContent = readmeFile.readText()
+                .replace(versionPlaceholder, currentVersion)
+            readmeFile.writeText(updatedContent)
+        }
     }
 }
 
