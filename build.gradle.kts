@@ -106,29 +106,6 @@ tasks.register("showVersion") {
         println("Current plugin version: $newVersion")
     }
 }
-tasks.register("generateFingerprint") {
-    dependsOn(tasks.shadowJar) // Ensure it runs after the shadowJar task
-
-    doLast {
-        val jarFile = file("build/libs/autorestart-${newVersion}.jar") // Path to your fat JAR
-        if (jarFile.exists()) {
-            // Generate SHA-256 hash (you can use other algorithms, e.g., MD5 or SHA-1)
-            val sha256 = MessageDigest.getInstance("SHA-256")
-            val fileBytes = jarFile.readBytes()
-            val hashBytes = sha256.digest(fileBytes)
-            val hashString = hashBytes.joinToString("") { "%02x".format(it) }
-
-            // Output the hash/fingerprint
-            println("Fingerprint (SHA-256): $hashString")
-
-            // Optionally, save the hash to a file
-            val fingerprintFile = file("build/libs/autorestart-${newVersion}-fingerprint.txt")
-            fingerprintFile.writeText(hashString)
-        } else {
-            println("JAR file not found: ${jarFile.absolutePath}")
-        }
-    }
-}
 
 // Fill in mavenUser and mavenPassword in ./gradle.properties or MAVEN_USER AND MAVEN_PASSWORD in your system environment.
 // Then uncomment dependsOn("publishAutorestartPublicationToAutorestartRepository") in tasks.build {}
