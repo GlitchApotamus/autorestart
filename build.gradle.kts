@@ -1,5 +1,3 @@
-import java.security.MessageDigest
-
 val versionFile = file("version.txt")
 
 fun incrementVersion(version: String): String {
