@@ -66,7 +66,7 @@ tasks.jar {enabled = false}
 tasks {
     shadowJar {
         archiveBaseName.set("autorestart")
-        archiveVersion.set("")
+//        archiveVersion.set("")
         archiveClassifier.set("")
         manifest {
             attributes(
@@ -79,7 +79,7 @@ tasks {
 tasks.build {
     dependsOn("shadowJar")
     dependsOn("showVersion")
-    dependsOn("generateFingerprint")
+//    dependsOn("publishAutorestartPublicationToAutorestartRepository")
 }
 
 tasks.processResources {
@@ -110,7 +110,7 @@ tasks.register("generateFingerprint") {
     dependsOn(tasks.shadowJar) // Ensure it runs after the shadowJar task
 
     doLast {
-        val jarFile = file("build/libs/autorestart.jar") // Path to your fat JAR
+        val jarFile = file("build/libs/autorestart-${newVersion}.jar") // Path to your fat JAR
         if (jarFile.exists()) {
             // Generate SHA-256 hash (you can use other algorithms, e.g., MD5 or SHA-1)
             val sha256 = MessageDigest.getInstance("SHA-256")
@@ -122,10 +122,33 @@ tasks.register("generateFingerprint") {
             println("Fingerprint (SHA-256): $hashString")
 
             // Optionally, save the hash to a file
-            val fingerprintFile = file("build/libs/autorestart-fingerprint.txt")
+            val fingerprintFile = file("build/libs/autorestart-${newVersion}-fingerprint.txt")
             fingerprintFile.writeText(hashString)
         } else {
             println("JAR file not found: ${jarFile.absolutePath}")
+        }
+    }
+}
+
+// Fill in mavenUser and mavenPassword in ./gradle.properties or MAVEN_USER AND MAVEN_PASSWORD in your system environment.
+// Then uncomment dependsOn("publishAutorestartPublicationToAutorestartRepository") in tasks.build {}
+publishing {
+    publications {
+        create<MavenPublication>("autorestart") {
+            artifactId = "autorestart"
+            from(components["java"])
+            artifacts.clear()
+            artifact(file("build/libs/autorestart-${newVersion}.jar"))
+        }
+    }
+    repositories {
+        maven {
+            name = "autorestart"
+            url = uri("${project.findProperty("uri") as String?}")
+            credentials {
+                username = project.findProperty("mavenUser") as String? ?: System.getenv("MAVEN_USER")
+                password = project.findProperty("mavenPassword") as String? ?: System.getenv("MAVEN_PASSWORD")
+            }
         }
     }
 }
